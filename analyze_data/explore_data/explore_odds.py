@@ -1,4 +1,5 @@
-import utils
+from get_information.data_mysql import get_data
+from analyze_data.explore_data import utils
 
 """
 oddsID SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

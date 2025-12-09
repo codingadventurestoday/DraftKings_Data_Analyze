@@ -1,3 +1,3 @@
-from get_data.data_loader import get_data
+from get_information.data_mysql import get_data
 
-"""run file from root dir: analyze_data/explore_data/stat_foundation.py"""
+"""run file from root dir: python3 -m analyze_data.explore_data.stat_foundation.py"""

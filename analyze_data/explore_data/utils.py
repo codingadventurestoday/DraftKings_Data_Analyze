@@ -3,8 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 def get_basic_stats(df, col_name):
-    """Returns mean, median, skew, IQR"""
-    pass
+    return df[col_name].describe()
 
 def plot_distribution(df, col_name, ax=None):
     """Creates the histogram/boxplot"""

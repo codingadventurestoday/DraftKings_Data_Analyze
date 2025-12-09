@@ -1,6 +1,6 @@
 import pandas as pd
 
-from sql_pandas_data import get_sql_engine
+from get_information.sql_pandas_data import get_sql_engine
 
 def get_data(query_string, params=None):
     engine = get_sql_engine()
