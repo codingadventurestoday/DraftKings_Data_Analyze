@@ -119,6 +119,6 @@ fav_percentages = pd.Series(favorites).value_counts(normalize=True) * 100
 # print(f"home_moneyline_descriptive: {home_moneyline_descriptive}")
 # print(f"away_moneyline_descriptive: {away_moneyline_descriptive}\n")
 
-# print(f"fav_counts: {fav_counts}")
+print(f"fav_counts: {fav_counts}")
 # print(f"fav_percentages: {fav_percentages}")
 

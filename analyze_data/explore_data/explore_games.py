@@ -53,8 +53,8 @@ descriptive_total_points = utils.get_basic_stats(game_data, 'total_points')
 # print(f"amount_competitive_games: {amount_competitive_games}")
 # print(f"amount_close_games: {amount_close_games}")
 
-# print(f"amount_home_wins: {amount_home_wins}")
-# print(f"amount_away_wins: {amount_away_wins}")
+print(f"amount_home_wins: {amount_home_wins}")
+print(f"amount_away_wins: {amount_away_wins}")
 
 # print(f"descriptive_away_points : {descriptive_away_points }")
 # print(f"descriptive_home_points : {descriptive_home_points }")
