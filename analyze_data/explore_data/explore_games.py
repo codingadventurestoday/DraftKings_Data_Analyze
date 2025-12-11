@@ -1,6 +1,8 @@
 from get_information.data_mysql import get_data
 from analyze_data.explore_data import utils
 
+"""run file from root dir: python3 -m analyze_data.explore_data.explore_games.py"""
+
 """
 gameID SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 game_date DATE,
@@ -15,7 +17,7 @@ FOREIGN KEY (away_teamID) REFERENCES teams(teamID),
 FOREIGN KEY (seasonID) REFERENCES seasons(seasonID)
 """
 
-game_data_query = 'SELECT gameID, score_home, score_away FROM games;'
+game_data_query = 'SELECT gameID, score_home, score_away FROM games WHERE game_date <= NOW();'
 
 game_data = get_data(game_data_query)
 
@@ -47,11 +49,13 @@ game_data['total_points'] = game_data['score_home'] + game_data['score_away']
 descriptive_total_points = utils.get_basic_stats(game_data, 'total_points')
 
 
-print(f"amount_blow_outs_games: {amount_blow_outs_games}")
-print(f"amount_competitive_games: {amount_competitive_games}")
-print(f"amount_close_games: {amount_close_games}")
-print(f"amount_home_wins: {amount_home_wins}")
-print(f"amount_away_wins: {amount_away_wins}")
-print(f"descriptive_away_points : {descriptive_away_points }")
-print(f"descriptive_home_points : {descriptive_home_points }")
-print(f"descriptive_total_points: {descriptive_total_points}")
+# print(f"amount_blow_outs_games: {amount_blow_outs_games}")
+# print(f"amount_competitive_games: {amount_competitive_games}")
+# print(f"amount_close_games: {amount_close_games}")
+
+# print(f"amount_home_wins: {amount_home_wins}")
+# print(f"amount_away_wins: {amount_away_wins}")
+
+# print(f"descriptive_away_points : {descriptive_away_points }")
+# print(f"descriptive_home_points : {descriptive_home_points }")
+# print(f"descriptive_total_points: {descriptive_total_points}")
