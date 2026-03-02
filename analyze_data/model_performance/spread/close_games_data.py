@@ -4,13 +4,14 @@ from get_information.data_mysql import get_data
 from analyze_data.model_performance.create_metrics.classification_report import make_classification_report
 
 query = """SELECT
-                g.gameID, g.score_home,
+                g.gameID, 
+                g.score_home,
                 g.score_away, 
                 o.oddsID, 
                 o.home_spread 
             FROM games g 
             INNER JOIN odds o ON o.gameID = g.gameID
-            WHERE ABS(o.home_spread) <= 7;"""
+            WHERE ABS(o.home_spread) <= 8;"""
 
 df = get_data(query)
 
@@ -37,4 +38,7 @@ polling["predicted_cover"] = (
 # data for all games 
 all_report = make_classification_report(polling["actual_cover"], polling["predicted_cover"])
 
-print("accuracy: ", all_report.precison)
+print("accuracy: ", all_report.accuracy)
+print("precision: ", all_report.precison)
+print("recall: ", all_report.recall)
+print("f1: ", all_report.f1)

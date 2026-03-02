@@ -1,41 +1,73 @@
 import pandas as pd
+import numpy as np
 
 from get_information.data_mysql import get_data
 from analyze_data.model_performance.create_metrics.classification_report import make_classification_report
 
-query = """SELECT
-                g.gameID, g.score_home,
-                g.score_away, 
-                o.oddsID, 
-                o.home_spread,
-                 
-            FROM games g 
-            INNER JOIN odds o ON o.gameID = g.gameID
-            WHERE ABS(o.home_spread) <= 7;"""
+query = """WITH GameAverages AS (
+    SELECT 
+        g.gameID, 
+        g.score_home, 
+        g.score_away, 
+        o.home_moneyline, 
+        o.away_moneyline,
+        o.home_spread,
+        AVG(o.home_spread) OVER(PARTITION BY g.gameID) AS avg_game_spread
+    FROM games g
+    INNER JOIN odds o 
+        ON g.gameID = o.gameID
+)
+SELECT 
+    gameID, 
+    score_home, 
+    score_away, 
+    home_moneyline, 
+    away_moneyline,
+    home_spread
+FROM GameAverages
+WHERE ABS(avg_game_spread) <= 8;"""
+
 
 df = get_data(query)
 
-df["margin"] = df["score_home"] - df["score_away"]
-df["actual_cover"] = (df["margin"] + df["home_spread"] > 0).astype(int)
 
-# might be able to modify 0 to find categories
-df["predicted_cover"] = (df["home_spread"] < 0).astype(int)
+# 1 = home; 0 = away
 
-polling = (
-    df.groupby("gameID")
-      .agg(
-          actual_cover=("actual_cover", "first"),
-          votes_for_home=("predicted_cover", "sum"),
-          total_votes=("predicted_cover", "count")
-      )
+df["margin"] = df["score_away"] - df["score_home"]
+
+df["actual_winner"] = np.where(
+    df["margin"] > 0, 0,
+    np.where(df["margin"] < 0, 1, -1)
 )
 
-polling["predicted_cover"] = (
-    polling["votes_for_home"] > (polling["total_votes"] / 2)
-).astype(int)
+df["snapshot_pred"] = np.where(df["home_moneyline"] < 0, 1, 0)
 
+polling = (
+    df.groupby("gameID")["snapshot_pred"]
+      .mean()
+      .reset_index()
+)
+
+polling["predicted_winner"] = (polling["snapshot_pred"] > 0.5).astype(int)
+
+game_results = df[["gameID", "actual_winner"]].drop_duplicates()
+
+final_df = game_results.merge(
+    polling[["gameID", "predicted_winner"]],
+    on="gameID"
+)
+final_df["correct_prediction"] = (final_df["predicted_winner"] == final_df["actual_winner"]).astype(int)
+final_df.loc[final_df["actual_winner"] == -1, "correct_prediction"] = 0
+
+# we need to ensure that the column data types are same for putting into metric equations
+y_true = final_df["actual_winner"].replace(-1,0)
+
+y_pred = final_df["predicted_winner"]
 
 # data for all games 
-all_report = make_classification_report(polling["actual_cover"], polling["predicted_cover"])
+close_report = make_classification_report(y_true, y_pred)
 
-print("accuracy: ", all_report.precison)
+print("Accuracy: ", close_report.accuracy)
+print("Precision: ", close_report.precison)
+print("Recall: ", close_report.recall)
+print("F1: ", close_report.f1)

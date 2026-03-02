@@ -10,7 +10,7 @@ query = """SELECT
                 o.home_spread 
             FROM games g 
             INNER JOIN odds o ON o.gameID = g.gameID
-            WHERE ABS(o.home_spread) > 7
+            WHERE ABS(o.home_spread) > 8
             AND ABS(o.home_spread) <= 16;"""
 
 df = get_data(query)
@@ -41,4 +41,14 @@ all_report = make_classification_report(polling["actual_cover"], polling["predic
 # data where game is predicted to be competivite   9>= x <= 16
 #comp_report = make_classification_report(df[""], df[""])
 
-print("accuracy: ", all_report.precison)
+print("accuracy: ", all_report.accuracy)
+print("precision: ", all_report.precison)
+print("recall: ", all_report.recall)
+print("f1: ", all_report.f1)
+
+"""
+this spread occurred in just 40 games
+40% accuracy for competitive games (spreads 8-16).
+
+Market Inefficiency: In a perfectly efficient market, this should be near 50%. A 40% accuracy rate suggests that in games where DraftKings expects a clear favorite (but not a blowout), the underdog is actually covering the spread much more often than the market predicts.
+"""

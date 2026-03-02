@@ -1,17 +1,71 @@
 import pandas as pd
+import numpy as np
 
 from get_information.data_mysql import get_data
 from analyze_data.model_performance.create_metrics.classification_report import make_classification_report
 
-query = """SELECT 
-            o.game_id, 
-            AVG(o.over_under), 
-            (g.score_home + g.score_away) AS total_score
-        FROM odds o
-        INNER JOIN games g ON o.game_id = g.game_id
-        GROUP BY g.game_id;"""
+query = """WITH GameAverages AS (
+    SELECT 
+        g.gameID, 
+        g.score_home, 
+        g.score_away, 
+        o.home_moneyline, 
+        o.away_moneyline,
+        o.home_spread,
+        AVG(o.home_spread) OVER(PARTITION BY g.gameID) AS avg_game_spread
+    FROM games g
+    INNER JOIN odds o 
+        ON g.gameID = o.gameID
+)
+SELECT 
+    gameID, 
+    score_home, 
+    score_away, 
+    home_moneyline, 
+    away_moneyline,
+    home_spread
+FROM GameAverages
+WHERE ABS(avg_game_spread) > 8
+AND ABS(avg_game_spread) <= 16;"""
 
 
+# 1 = home; 0 = away
 df = get_data(query)
+df["margin"] = df["score_away"] - df["score_home"]
 
-# data where game is predicted to be competivite   9>= x <= 16
+df["actual_winner"] = np.where(
+    df["margin"] > 0, 0,
+    np.where(df["margin"] < 0, 1, -1)
+)
+
+df["snapshot_pred"] = np.where(df["home_moneyline"] < 0, 1, 0)
+
+polling = (
+    df.groupby("gameID")["snapshot_pred"]
+      .mean()
+      .reset_index()
+)
+
+polling["predicted_winner"] = (polling["snapshot_pred"] > 0.5).astype(int)
+
+game_results = df[["gameID", "actual_winner"]].drop_duplicates()
+
+final_df = game_results.merge(
+    polling[["gameID", "predicted_winner"]],
+    on="gameID"
+)
+final_df["correct_prediction"] = (final_df["predicted_winner"] == final_df["actual_winner"]).astype(int)
+final_df.loc[final_df["actual_winner"] == -1, "correct_prediction"] = 0
+
+# we need to ensure that the column data types are same for putting into metric equations
+y_true = final_df["actual_winner"].replace(-1,0)
+
+y_pred = final_df["predicted_winner"]
+
+# data for all games 
+comp_report = make_classification_report(y_true, y_pred)
+
+print("Accuracy: ", comp_report.accuracy)
+print("Precision: ", comp_report.precison)
+print("Recall: ", comp_report.recall)
+print("F1: ", comp_report.f1)
