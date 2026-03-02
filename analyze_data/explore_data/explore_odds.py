@@ -105,9 +105,9 @@ fav_percentages = pd.Series(favorites).value_counts(normalize=True) * 100
 # print(f"projected_away_competitive: {projected_away_competitive}")
 # print(f"projected_away_close: {projected_away_close}\n")
 
-# print(f"total_projected_blow_outs: {total_projected_blow_outs}")
-# print(f"total_projected_competitive: {total_projected_competitive}")
-# print(f"total_projected_close: {total_projected_close}\n")
+print(f"total_projected_blow_outs: {total_projected_blow_outs}")
+print(f"total_projected_competitive: {total_projected_competitive}")
+print(f"total_projected_close: {total_projected_close}\n")
 
 # print(f"over_under_odds_descriptive: {over_under_descriptive}")
 # print(f"over_odds_descriptive: {over_odds_descriptive}")

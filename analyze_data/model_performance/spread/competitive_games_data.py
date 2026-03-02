@@ -3,7 +3,16 @@ import pandas as pd
 from get_information.data_mysql import get_data
 from analyze_data.model_performance.create_metrics.classification_report import make_classification_report
 
-query = "SELECT g.gameID, g.score_home, g.score_away, o.oddsID, o.home_spread FROM games g INNER JOIN odds o ON o.gameID = g.gameID;"
+query = """SELECT
+                g.gameID, g.score_home,
+                g.score_away, 
+                o.oddsID, 
+                o.home_spread 
+            FROM games g 
+            INNER JOIN odds o ON o.gameID = g.gameID
+            WHERE ABS(o.home_spread) > 7
+            AND ABS(o.home_spread) <= 16;"""
+
 df = get_data(query)
 
 df["margin"] = df["score_home"] - df["score_away"]
@@ -29,13 +38,7 @@ polling["predicted_cover"] = (
 # data for all games 
 all_report = make_classification_report(polling["actual_cover"], polling["predicted_cover"])
 
-# data where game is predicted to close x<= 8
-#close_report = make_classification_report(df[""], df[""])
-
 # data where game is predicted to be competivite   9>= x <= 16
 #comp_report = make_classification_report(df[""], df[""])
-
-# data where game is predicted to be a blow out x>= 17 
-#blow_report = make_classification_report(df[""], df[""])
 
 print("accuracy: ", all_report.precison)

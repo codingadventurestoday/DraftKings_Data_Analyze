@@ -2,8 +2,6 @@ import numpy as np
 import pandas as pd
 import sklearn.metrics as metrics
 
-from get_information.data_mysql import get_data
-
 class Report: 
     def __init__(self, accuracy, precision, recall, f1):
         self.accuracy = accuracy
