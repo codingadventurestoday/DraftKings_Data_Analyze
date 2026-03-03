@@ -97,28 +97,28 @@ favorites = np.select(conditions, choices, default='Pick Em')
 fav_counts = pd.Series(favorites).value_counts()
 fav_percentages = pd.Series(favorites).value_counts(normalize=True) * 100
 
-# print(f"projected_home_blow_outs: {projected_home_blow_outs}")
-# print(f"projected_home_competitive: {projected_home_competitive}")
-# print(f"projected_home_close: {projected_home_close}\n")
+print(f"projected_home_blow_outs: {projected_home_blow_outs}")
+print(f"projected_home_competitive: {projected_home_competitive}")
+print(f"projected_home_close: {projected_home_close}\n")
 
-# print(f"projected_away_blow_outs: {projected_away_blow_outs}")
-# print(f"projected_away_competitive: {projected_away_competitive}")
-# print(f"projected_away_close: {projected_away_close}\n")
+print(f"projected_away_blow_outs: {projected_away_blow_outs}")
+print(f"projected_away_competitive: {projected_away_competitive}")
+print(f"projected_away_close: {projected_away_close}\n")
 
 print(f"total_projected_blow_outs: {total_projected_blow_outs}")
 print(f"total_projected_competitive: {total_projected_competitive}")
 print(f"total_projected_close: {total_projected_close}\n")
 
-# print(f"over_under_odds_descriptive: {over_under_descriptive}")
-# print(f"over_odds_descriptive: {over_odds_descriptive}")
-# print(f"under_odds_descriptive: {under_odds_descriptive}\n")
+print(f"over_under_odds_descriptive: {over_under_descriptive}")
+print(f"over_odds_descriptive: {over_odds_descriptive}")
+print(f"under_odds_descriptive: {under_odds_descriptive}\n")
 
-# print(f"home_spread_descriptive: {home_spread_descriptive}")
-# print(f"away_spread_descriptive: {away_spread_descriptive}")
+print(f"home_spread_descriptive: {home_spread_descriptive}")
+print(f"away_spread_descriptive: {away_spread_descriptive}")
 
-# print(f"home_moneyline_descriptive: {home_moneyline_descriptive}")
-# print(f"away_moneyline_descriptive: {away_moneyline_descriptive}\n")
+print(f"home_moneyline_descriptive: {home_moneyline_descriptive}")
+print(f"away_moneyline_descriptive: {away_moneyline_descriptive}\n")
 
 print(f"fav_counts: {fav_counts}")
-# print(f"fav_percentages: {fav_percentages}")
+print(f"fav_percentages: {fav_percentages}")
 
